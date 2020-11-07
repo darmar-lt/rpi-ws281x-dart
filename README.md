@@ -5,7 +5,6 @@ It is Dart language binding for rpi_ws281x library.
 The rpi_ws281x library enables controlling WS281X LEDs.
 Using Dart binding, you can control your LEDs directly
 from Dart code. More info about rpi_ws281x:
-
     https://github.com/jgarff/rpi_ws281x
     
 ### Download
