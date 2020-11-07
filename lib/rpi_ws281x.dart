@@ -1,9 +1,6 @@
 import 'dart:ffi' as ffi;
 import 'package:ffi/ffi.dart'; // needed for Utf8
 
-import 'dart:io' show Platform;
-import 'package:path/path.dart' as p;
-
 typedef new_ws2811_t_func = ffi.Pointer<ffi.Void> Function();
 typedef NewWS2811 = ffi.Pointer<ffi.Void> Function();
 
@@ -238,7 +235,7 @@ class WS281x {
   {
     var resp = ws2811_SetLed(_channel, pos, color);
     if (resp != 0) {
-      throw RangeError('ws2811_SetLed: pos=$pos should be in range (0-${numPixels()}).');
+      throw RangeError('ws2811_SetLed: pos=$pos should be in range (0-${numPixels()-1}).');
     }
   }
 
