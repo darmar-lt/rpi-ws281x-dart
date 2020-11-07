@@ -7,6 +7,12 @@ Using Dart binding, you can control your LEDs directly
 from Dart code. More info about rpi_ws281x:
 
     https://github.com/jgarff/rpi_ws281x
+    
+### Download
+
+- Clone repository together with the source code of rpi_ws281x library:
+
+    `git clone --recurse-submodules <path to this project on github>`
 
 ### Build:
 
