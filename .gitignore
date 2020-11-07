@@ -1,0 +1,14 @@
+# Files and directories created by pub
+.dart_tool/
+.packages
+pubspec.lock
+rpi_ws281x.iml
+
+# IDE files
+.idea/
+
+# Conventional directory for build outputs
+build/
+
+# Directory created by dartdoc
+doc/api/

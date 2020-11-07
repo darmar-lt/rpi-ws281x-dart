@@ -1,0 +1,27 @@
+#
+# SConscript
+#
+
+Import(['clean_envs'])
+
+tools_env = clean_envs['userspace'].Clone()
+
+
+# Build Library
+lib_srcs = Split('''
+    ws281x_wrap.c
+    rpi_ws281x/mailbox.c \
+    rpi_ws281x/ws2811.c \
+    rpi_ws281x/pwm.c \
+    rpi_ws281x/pcm.c \
+    rpi_ws281x/dma.c \
+    rpi_ws281x/rpihw.c 
+''')
+
+version_hdr = tools_env.Version('version')
+
+# Shared library
+ws2811wrap_slib = tools_env.SharedLibrary('libws2811wrap', lib_srcs)
+
+Default([ws2811wrap_slib])
+
