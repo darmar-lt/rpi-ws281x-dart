@@ -86,25 +86,25 @@ int Color(int red, int green, int blue, [int white = 0]) {
 /// Class to represent a NeoPixel/WS281x LED display.
 ///
 class WS281x {
-  ffi.Pointer<ffi.Void> _leds;
-  ffi.Pointer<ffi.Void> _channel;
+  ffi.Pointer<ffi.Void>? _leds;
+  late final ffi.Pointer<ffi.Void> _channel;
 
-  DeleteWS2811 deleteWS2811;
-  WS2811_Init ws2811_Init;
-  WS2811_Render ws2811_Render;
-  WS2811_SetFreq ws2811_SetFreq;
-  WS2811_SetDmaNum ws2811_SetDmaNum;
-  WS2811_Channel ws2811_Channel;
-  WS2811_SetCount ws2811_SetCount;
-  WS2811_GetCount ws2811_GetCount;
-  WS2811_SetGpioNum ws2811_SetGpioNum;
-  WS2811_SetInvert ws2811_SetInvert;
-  WS2811_SetBrightness ws2811_SetBrightness;
-  WS2811_GetBrightness ws2811_GetBrightness;
-  WS2811_SetStripType ws2811_SetStripType;
-  WS2811_SetLed ws2811_SetLed;
-  WS2811_GetLed ws2811_GetLed;
-  WS2811_GetResponse_str ws2811_GetResponse_str;
+  late final DeleteWS2811 deleteWS2811;
+  late final WS2811_Init ws2811_Init;
+  late final WS2811_Render ws2811_Render;
+  late final WS2811_SetFreq ws2811_SetFreq;
+  late final WS2811_SetDmaNum ws2811_SetDmaNum;
+  late final WS2811_Channel ws2811_Channel;
+  late final WS2811_SetCount ws2811_SetCount;
+  late final WS2811_GetCount ws2811_GetCount;
+  late final WS2811_SetGpioNum ws2811_SetGpioNum;
+  late final WS2811_SetInvert ws2811_SetInvert;
+  late final WS2811_SetBrightness ws2811_SetBrightness;
+  late final WS2811_GetBrightness ws2811_GetBrightness;
+  late final WS2811_SetStripType ws2811_SetStripType;
+  late final WS2811_SetLed ws2811_SetLed;
+  late final WS2811_GetLed ws2811_GetLed;
+  late final WS2811_GetResponse_str ws2811_GetResponse_str;
 
   /// Class to represent a NeoPixel/WS281x LED display.
   ///
@@ -175,51 +175,63 @@ class WS281x {
 
     // Create ws2811_t structure and fill in parameters.
     _leds = newWS2811();
-
-    // Initialize the channels to zero
-    for (var channum=0; channum<2; channum++) {
-      var chan = ws2811_Channel(_leds, channum);
-      ws2811_SetCount(chan, 0);
-      ws2811_SetGpioNum(chan, 0);
-      ws2811_SetInvert(chan, 0);
-      ws2811_SetBrightness(chan, 0);
+    if (_leds == null) {
+      throw Exception('ws2811_t structure (_leds) were not created.');
     }
+    var leds = _leds;
 
-    // Initialize the channel in use
-    _channel = ws2811_Channel(_leds, channel);
-    ws2811_SetCount(_channel, num);
-    ws2811_SetGpioNum(_channel, pin);
-    ws2811_SetInvert(_channel, invert ? 1 : 0);
-    ws2811_SetBrightness(_channel, brightness);
-    ws2811_SetStripType(_channel, strip_type);
+    if (leds != null) {
+      // Initialize the channels to zero
+      for (var channum=0; channum<2; channum++) {
+        var chan = ws2811_Channel(leds, channum);
+        ws2811_SetCount(chan, 0);
+        ws2811_SetGpioNum(chan, 0);
+        ws2811_SetInvert(chan, 0);
+        ws2811_SetBrightness(chan, 0);
+      }
 
-    // Initialize the controller
-    ws2811_SetFreq(_leds, freq_hz);
-    ws2811_SetDmaNum(_leds, dma);
+      // Initialize the channel in use
+      _channel = ws2811_Channel(leds, channel);
+      ws2811_SetCount(_channel, num);
+      ws2811_SetGpioNum(_channel, pin);
+      ws2811_SetInvert(_channel, invert ? 1 : 0);
+      ws2811_SetBrightness(_channel, brightness);
+      ws2811_SetStripType(_channel, strip_type);
+
+      // Initialize the controller
+      ws2811_SetFreq(leds, freq_hz);
+      ws2811_SetDmaNum(leds, dma);
+    }
   }
 
   void free()
   {
     if (_leds != null) {
-      deleteWS2811(_leds);
+      deleteWS2811(_leds!);
     }
   }
 
   /// Initialize library, must be called once before other functions are called.
   void begin()
   {
-    var resp = ws2811_Init(_leds);
+    if (_leds == null) {
+      throw Exception('ws2811_t structure (_leds) were not created.');
+    }
+    var resp = ws2811_Init(_leds!);
     if (resp != WS2811_SUCCESS) {
-      var message = Utf8.fromUtf8(ws2811_GetResponse_str(resp));
+      var message = ws2811_GetResponse_str(resp).toString();
       throw Exception('ws2811_init failed with code $resp ($message)');
     }
   }
 
   /// Update the display with the data from the LED buffer.
   void show() {
-    var resp = ws2811_Render(_leds);
+    if (_leds == null) {
+      throw Exception('ws2811_t structure (_leds) were not created.');
+    }
+    var resp = ws2811_Render(_leds!);
     if (resp != WS2811_SUCCESS) {
-      var message = Utf8.fromUtf8(ws2811_GetResponse_str(resp));
+      var message = ws2811_GetResponse_str(resp).toString();
       throw Exception('ws2811_Render failed with code $resp ($message)');
     }
   }
